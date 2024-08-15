@@ -57,7 +57,7 @@
 <body>
     <div class="container">
         <h2>Sign Up</h2>
-        <form action="signup.php" method="POST">
+        <form action="signup.php" method="post">
             <div class="form-group">
                 <label for="name">userName:</label>
                 <input type="text" id="name" name="name" required>
@@ -100,7 +100,7 @@ if(isset($_POST['create'])){
 
     $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
  // Prepare the SQL statement
-    $stmt = $conn-> prepare("INSERT INTO registration(username, password, email, userType)
+    $stmt = $conn-> prepare("INSERT INTO signup(name, password, email, userType)
     VALUES(?,?,?,?)");
     
     $stmt->bind_param("ssss", $username , $hashedpassword, $email, $usertype);
@@ -110,10 +110,8 @@ if(isset($_POST['create'])){
     echo" REISTRATION SUCCESSFUL....";
     $stmt->close();
     $conn->close();
-    header("./signup.html");
+    header("Location:student/index.html");
     exit();
-
-
 
 }
 ?>

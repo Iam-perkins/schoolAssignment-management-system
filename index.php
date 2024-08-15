@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php require 'db.php';?>
 <html>
 <head>
     <title>Admin Page</title>
@@ -54,18 +55,25 @@
         .form-group .pending-list ul li {
             margin-bottom: 10px;
         }
+        td{
+    justify-content: space-between;
+    margin-left: 3px;
+        }
+        tr:nth-child(even){
+    background-color:#D6EEEE;
+        }
+        .delete{
+            background-color: red;
+            color: white;
+            border-radius: 3px;
+        }
+        .accept{
+            background-color: greenyellow;
+            color: black;
+            border-radius: 3px;
+        }
     </style>
-    <script>
-        function acceptUser(userId) {
-            // Code to accept user
-            alert("User with ID " + userId + " has been accepted!");
-        }
-
-        function declineUser(userId) {
-            // Code to decline user
-            alert("User with ID " + userId + " has been declined!");
-        }
-    </script>
+    
 </head>
 <body>
     <div class="container">
@@ -73,20 +81,63 @@
         <div class="form-group">
             <label for="pendingUsers">Pending Users:</label>
             <div class="pending-list">
-                <ul>
-                    <li>
-                        Student: John Doe (ID: 123)
-                        <input type="submit" value="Accept" onclick="acceptUser(123)">
-                        <input type="submit" value="Decline" onclick="declineUser(123)">
-                    </li>
-                    <li>
-                        Teacher: Jane Smith (ID: 456)
-                        <input type="submit" value="Accept" onclick="acceptUser(456)">
-                        <input type="submit" value="Decline" onclick="declineUser(456)">
-                    </li>
-                </ul>
+            <table style="width:100%">
+          
+            <tr>
+                       <th>ID</th>               
+                       <th>USERNAME</th>
+                       <th>USERTYPE</th>
+                       <th colspan ='2'>ACTION</th>
+                    </tr>
+            <?php
+         
+              $sql= " SELECT ID, name , userType FROM signup";
+                $result= $conn->query($sql);
+                 if(!$result){
+                     die("Invalid query".$conn->error);
+}
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                       
+                       <tr>
+                       <th id="strike"><span><form method="post">
+                        
+                        </form>
+                    </span><p id="task" class="child"><?php echo $row["ID"]?></p></th>
+                       <th id="time"><?php echo $row["name"]?></th>
+                       <th id="to"><?php echo $row["userType"]?></th>
+                       
+                       
+                       <th colspan ='2'><form method="post">
+                       <button id ='two' class="accept" type='submit' name='accept' value=>ACCEPT</button>
+                       <button id ='two' class="delete" type='submit' name='delete' value=<?php echo $row['ID']?>>DELETE</button>
+                       </form>
+                       </th>
+                    </tr>
+                    <?php
+                         
+                     
+}
+            ?>
+                 
+            </table>
+          
+                        
             </div>
         </div>
     </div>
 </body>
+<?php
+if(isset($_POST['delete'])){
+    
+
+        $id= $_POST['delete'];
+        
+        $stmt = $conn-> prepare("DELETE FROM signup  WHERE ID=?");
+        $stmt->bind_param("i",$id);
+        $stmt->execute();
+        echo "<script> alert('user deleted successfully')</script>";
+        $conn->close();
+    }
+?>
 </html>

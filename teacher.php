@@ -61,11 +61,7 @@
         }
     </style>
     <script>
-        function createAssignment() {
-            // Code to create assignment room
-            alert("Assignment room created successfully!");
-        }
-
+        
         function uploadQuestions() {
             // Code to upload questions
             alert("Questions uploaded successfully!");
@@ -82,6 +78,7 @@
     <div class="container">
         <h2>Hi, Welcome Back USER<span><h5>we missed you</h5></span></h2>
         <p> create an assignment room for your fellow students to interact and answer questions below</p>
+        <form method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="assignmentName">Assignment Name:</label>
             <input type="text" id="assignmentName" required name="Assignment">
@@ -102,7 +99,10 @@
         <div class="form-group">
             <input type="submit" value="Create Assignment" onclick="createAssignment()" name="create">
         </div>
-        
+        </form>
+        <div>
+            
+        </div>
 
         <a href="publish.php">publish results</a>
     </div>
@@ -110,16 +110,16 @@
 </body>
 <?php
 if(isset($_POST['create'])){
-    require "db.student.php";
+    require "db.teacher.php";
     $assignment= $_POST['Assignment'];
     $summary= $_POST['summary'];
     $code= $_POST['Code'];
-    $question= $_POST['uploadQuestion'];
-
-    $stmt = $conn-> prepare("INSERT INTO registration(Assignment, summary, Code, uploadQuestion)
-    VALUES(?,?,?,?)");
     
-    $stmt->bind_param("ssss", $assignment , $summary, $codel, $question);
+
+    $stmt = $conn-> prepare("INSERT INTO teacher(Assignment, summary, Code)
+    VALUES(?,?,?)");
+     
+    $stmt->bind_param("sss", $assignment , $summary, $code);
 
      // Execute the statement
     $stmt -> execute();
@@ -130,5 +130,42 @@ if(isset($_POST['create'])){
         exit();
 
 }
+?>
+<?php
+
+if(isset($_POST['create'])){
+    require"db.teacher.php";
+$targetDir= "images/";
+$targetFile = $targetDir. basename($_FILES['uploadQuestions']['name']);
+$uploadOk= 1;
+    if(file_exists($targetFile)){
+        echo " sorry file already exists";
+        $uploadOk = 0;
+    }
+
+    if($uploadOk==0){
+        echo "fsorry, your fie was not uploaded";
+    }else{
+        if(move_uploaded_file($_FILES['uploadQuestions']['tmp_name'],$targetFile)){
+            echo " the file ". basename($_FILES['uploadQuestions']['name']). "has been uploaded.";
+        }else{
+            echo " sorry, there was an error uploading  your file";
+        }
+    }
+       
+    $stmt = $conn->prepare("INSERT INTO teacher(uploasQuestion)
+    VALUES(?) ");
+    $stmt->bind_param("s", $targetFile);
+
+    // Execute the statement
+   $stmt -> execute();
+   echo" ROOM CREATED SUCCESSFULLY";
+   $stmt->close();
+   $conn->close();
+   header("Location: teacher.php");
+       exit();
+
+}
+
 ?>
 </html>

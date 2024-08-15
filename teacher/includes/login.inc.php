@@ -1,6 +1,6 @@
 <?php
 if(isset($_POST['log'])){
-    require "db.php";
+    require "./student/includes/db.inc.php";
     $username = $_POST['name'];
    
     $password = $_POST['password'];
@@ -13,7 +13,7 @@ if(isset($_POST['log'])){
         exit();
     }
     // Prepare the SQL statement
-    $stmt = $conn->prepare("SELECT * FROM registration WHERE username = ? ");
+    $stmt = $conn->prepare("SELECT * FROM signup WHERE  name = ? ");
     $stmt->bind_param("s", $username);
 
     // Execute the statement

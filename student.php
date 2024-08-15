@@ -66,10 +66,7 @@
             alert("Answers submitted successfully!");
         }
 
-        function viewResults() {
-            // Code to view results
-            alert("Here are your results!");
-        }
+        
     </script>
 </head>
 <body>
@@ -93,7 +90,7 @@
         <div class="form-group">
         <div class="container">
         <h2>view Results</h2>
-        <form action="save_results.php" method="POST">
+        <form method="post">
             <div class="form-group">
                 <label for="studentName">Student Name:</label>
                 <input type="text" id="studentName" name="studentName" required>
@@ -105,12 +102,10 @@
             <input type="submit" value="View Results" onclick="viewResults()" name="view">
         </div>
         <div class="form-group result-list">
-            <h3>Your Results:</h3>
-            <ul>
-                <li>Question 1: Correct</li>
-                <li>Question 2: Incorrect</li>
-                <li>Question 3: Correct</li>
-            </ul>
+           
+           <?php
+           echo" <h3>Your Results:</h3>";
+           ?>
         </div>
     </div>
 </body>
@@ -119,7 +114,7 @@ if(isset($_POST['Join'])){
     require"db.student.php";
     $assignment =$_POST['Assignment'];
     
-    $stmt = $conn->prepare("SELECT * FROM registration WHERE assignment = ? ");
+    $stmt = $conn->prepare("SELECT * FROM teacher WHERE assignment = ? ");
     $stmt->bind_param("s", $assignment);
 
     $stmt->execute();
@@ -152,7 +147,7 @@ if(isset($_POST['submit'])){
    
     
  // Prepare the SQL statement
-    $stmt = $conn-> prepare("INSERT INTO registration(submit)
+    $stmt = $conn-> prepare("INSERT INTO student(submit)
     VALUES(?)");
     
     $stmt->bind_param("ssss", $submit);
@@ -169,11 +164,11 @@ if(isset($_POST['submit'])){
 ?>
 <?php
 if(isset($_POST['view'])){
-    require"db.student.php";
+    require"db.publish.php";
     $studentname =$_POST['studentName'];
     $subject=$_POST['subject'];
     
-    $stmt = $conn->prepare("SELECT * FROM registration WHERE studentName = ? ");
+    $stmt = $conn->prepare("SELECT * FROM publish WHERE studentName = ?  AND subjects= ?" );
     $stmt->bind_param("ss", $studentName, $subject);
 
     $stmt->execute();
@@ -186,11 +181,13 @@ if(isset($_POST['view'])){
         exit();
     } 
     //  code found, return the  code data
-    $user = $result->fetch_assoc();
+    $users = $result->fetch_assoc();
+  
 
 
     session_start();
-    $_SESSION['studentName'] = $user[0]['studentName']; 
+    $_SESSION['marks'] = $users[0]['marks']; 
+    
 
 
     // if  name matches , view  your results

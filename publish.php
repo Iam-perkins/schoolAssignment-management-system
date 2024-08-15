@@ -50,7 +50,7 @@
 <body>
     <div class="container">
         <h2>Enter Results</h2>
-        <form action="save_results.php" method="POST">
+        <form  method="POST">
             <div class="form-group">
                 <label for="studentName">Student Name:</label>
                 <input type="text" id="studentName" name="studentName" required>
@@ -71,8 +71,8 @@
 </body>
 <?php
 
-if(isset($_POST['create'])){
-    require "db.publish.php.";
+if(isset($_POST['publish'])){
+    require "db.publish.php";
 
     $studentname =$_POST['studentName'];
     $subject =$_POST['subject'];
@@ -80,14 +80,14 @@ if(isset($_POST['create'])){
     $mark= $_POST['marks'];
 
  // Prepare the SQL statement
-    $stmt = $conn-> prepare("INSERT INTO registration(studentName, subject, marks)
+    $stmt = $conn-> prepare("INSERT INTO publish(studentName, subjects , marks)
     VALUES(?,?,?)");
     
     $stmt->bind_param("sss",  $studentname, $subject, $mark);
 
      // Execute the statement
     $stmt -> execute();
-    echo" REISTRATION SUCCESSFUL....";
+    echo" REDISTRATION SUCCESSFUL....";
     $stmt->close();
     $conn->close();
     header("Location: teacher.php");
